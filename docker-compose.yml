@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TARGET: "db-server"
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/app
+    environment:
+      - GO_ENV=development
+
+  ws-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TARGET: "ws-server"
+    ports:
+      - "5002:5002"
+    volumes:
+      - .:/app
+    environment:
+      - GO_ENV=development
