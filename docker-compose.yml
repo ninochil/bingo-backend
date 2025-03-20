@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db-server:
     build:
@@ -10,7 +8,7 @@ services:
     ports:
       - "5001:5001"
     volumes:
-      - .:/app
+      - /Users/alufu/work/bingo-backend:/app
     environment:
       - GO_ENV=development
 
@@ -23,6 +21,6 @@ services:
     ports:
       - "5002:5002"
     volumes:
-      - .:/app
+      - /Users/alufu/work/bingo-backend:/app
     environment:
       - GO_ENV=development
