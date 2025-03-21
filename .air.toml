@@ -6,11 +6,16 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-
-cmd = "go build -o ./tmp/db-server ./cmd/db-server && go build -o ./tmp/ws-server ./cmd/ws-server"
-bin = "tmp/db-server"
-full_bin = "APP_ENV=dev APP_USER=air ./tmp/db-server"
-
+# Array of commands to run before each build
+pre_cmd = ["echo 'hello air' > pre_cmd.txt"]
+# Just plain old shell command. You could use `make` as well.
+cmd = "go build -o ./tmp/main ."
+# Array of commands to run after ^C
+post_cmd = ["echo 'hello air' > post_cmd.txt"]
+# Binary file yields from `cmd`.
+bin = "tmp/main"
+# Customize binary, can setup environment variables when run your app.
+full_bin = "APP_ENV=dev APP_USER=air ./tmp/main"
 # Watch these filename extensions.
 include_ext = ["go", "tpl", "tmpl", "html"]
 # Ignore these filename extensions or directories.
@@ -34,7 +39,7 @@ poll = false
 # Poll interval (defaults to the minimum interval of 500ms).
 poll_interval = 500 # ms
 # It's not necessary to trigger build each time file changes if it's too frequent.
-delay = 1000 # ms
+delay = 0 # ms
 # Stop running old binary when build errors occur.
 stop_on_error = true
 # Send Interrupt signal before killing process (windows does not support this feature)
@@ -43,8 +48,10 @@ send_interrupt = false
 kill_delay = 500 # nanosecond
 # Rerun binary or not
 rerun = false
-# Delay after each execution
+# Delay after each executions
 rerun_delay = 500
+# Add additional arguments when running binary (bin/full_bin). Will run './tmp/main hello world'.
+args_bin = ["hello", "world"]
 
 [log]
 # Show log time
