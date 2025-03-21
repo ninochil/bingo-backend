@@ -1,25 +1,19 @@
-# Go 1.21 の公式イメージを使用
 FROM golang:1.24 as builder
 
 # 作業ディレクトリを作成
 WORKDIR /app
 
-# go.modとgo.sumを先にコピーしてキャッシュを効率化
+# go.modとgo.sumをコピー
 COPY go.mod go.sum ./
-RUN go mod download
 
-# ソースコードをコピー
+# 依存関係を解決
+RUN go mod tidy
+
+# ソースコードをコンテナにコピー
 COPY . .
 
-# ビルドターゲットを受け取ってビルド
-ARG TARGET
-RUN go build -o /app/main ./cmd/${TARGET}
+# 安定バージョンの air を明示的にインストール
+RUN go install github.com/cosmtrek/air@v1.43.0
 
-# 実行用のイメージ（軽量化）
-FROM gcr.io/distroless/base-debian12
-
-# 必要なファイルをコピー
-COPY --from=builder /app/main /main
-
-# 実行するコマンド
-CMD ["/main"]
+# air を使ってホットリロード実行
+CMD ["air"]
