@@ -1,29 +1,31 @@
-version: "3.9"
-
 services:
   db-server:
     image: db-server
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: db-server/Dockerfile
     ports:
       - "5001:5001"
     volumes:
-      - .:/app
+      - ./db-server:/app
+    networks:
+      - external
     environment:
       - GO_ENV=development
     depends_on:
-      - db 
+      - db
 
   ws-server:
     image: ws-server
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ws-server/Dockerfile
     ports:
       - "5002:5002"
+    networks:
+      - external
     volumes:
-      - .:/app
+      - ./ws-server:/app
     environment:
       - GO_ENV=development
 
@@ -32,15 +34,21 @@ services:
     container_name: mysql-db
     volumes:
       - type: bind
-        source: "./db/my.cnf"
+        source: "db-server/db/my.cnf"
         target: "/etc/mysql/conf.d/my.cnf"
-      - ./db/log:/var/log/mysql
-      - ./db/data:/var/lib/mysql
+      - ./db-server/db/log:/var/log/mysql
+      - ./db-server/db/data:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      - external
     environment:                       
       MYSQL_DATABASE: ${MYSQL_DATABASE:-bingodon}
       MYSQL_USER: ${MYSQL_USER:-bingodon}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
       TZ: "Asia/Tokyo"
+
+networks:
+  external:
+    external: true
