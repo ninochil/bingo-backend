@@ -42,6 +42,10 @@ type Message struct {
 	Numbers   []int    `json:"numbers,omitempty"`
 	Questions []string `json:"questions,omitempty"`
 	Question  string   `json:"question,omitempty"`
+	Old       string   `json:"old,omitempty"`
+	New       string   `json:"new,omitempty"`
+	Result    string   `json:"result,omitempty"`
+	VotedUser string   `json:"votedUser,omitempty"`
 }
 
 var upgrader = websocket.Upgrader{
@@ -57,6 +61,9 @@ var userClients []*websocket.Conn
 
 var Clients = make(map[*Client]bool)
 var Broadcast = make(chan Message)
+var votes = make(map[string]string)
+var currentQuestion string
+var matchedUsers []string
 
 var QuestionBank = []string{
 	"質問1", "質問2", "質問3", "質問4", "質問5", "質問6", "質問7", "質問8", "質問9",
